@@ -1,0 +1,12 @@
+QUANTITATIVE NOISE STATISTICS REPORT: BEFORE VS AFTER
+=====================================================
+
+Noise Type Metric              | Raw (Before)    | Cleaned (After) | Improvement Status
+-------------------------------------------------------------------------------------
+Striping Anisotropy Ratio      |       7971.5391 |         32.0823 | Reduced by 99.6%
+Atmospheric Absorption Depth   |          0.0000 |          0.0189 | Smoothed by -51409.3%
+Low SNR Bands (%)              |          100.0% |           24.3% | Improved by 75.7%
+Spike Noise (Outlier Count)    |               0 |               0 | Eliminated nan%
+Gaussian HF Variance           |  268189040.0000 |          0.0001 | Suppressed by 100.0%
+Photon Noise (Dark Var)        |         84.1125 |          0.0013 | Reduced by 100.0%
+Dust Scattering Offset (Min)   |        -60.4491 |          0.4170 | Normalized to 0.0 (100%)

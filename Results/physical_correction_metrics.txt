@@ -1,0 +1,8 @@
+Noise Metric,Raw Value,Post-Physical Value,Interpretation
+Striping_Index,17580.0957,0.0271,Should drop but may need CNN
+Atmospheric_Absorption_Depth,0.1895,0.0068,Should drastically drop towards 0
+Worst_10_Percent_SNR,0.2915,7.6698,Should increase
+Spike_Count,0,0,May drop due to normalization but spikes persist
+Gaussian_Local_Variance,59597692.000000,0.001258,Remains high, requires Autoencoder
+Photon_Noise_CoV,-0.0026,0.2448,Should drop due to illumination correction
+Dust_Scattering_Base_Radiance,-6.7200,0.1888,Should drop to near zero

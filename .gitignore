@@ -1,7 +1,2 @@
 Raw data/
-ML_Results/
-Pipeline_Results/
-Results/
-*.npy
-!Advanced_Results/fully_denoised_cube.npy
 .DS_Store
