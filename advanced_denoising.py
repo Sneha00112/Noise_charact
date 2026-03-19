@@ -368,9 +368,8 @@ try:
     for ml_alpha in [0.20, 0.15, 0.10, 0.05]:
         candidate = norm01(ml_alpha * norm01(ae_out) + (1-ml_alpha) * work)
         cand_nm   = compute_all(candidate)
-        safe_ml   = all(cand_nm[i] <= cur_nm[i] + 1e-4
-                        for i in range(len(METRIC_NAMES))
-                        if cur_nm[i] > NEAR_ZERO_TOL)
+        safe_ml   = all(cand_nm[i] <= max(cur_nm[i], NEAR_ZERO_TOL) + 1e-5
+                        for i in range(len(METRIC_NAMES)))
         if safe_ml:
             work = candidate.copy()
             print(f"  ✅ ML AE blended at α={ml_alpha}: "
@@ -404,10 +403,16 @@ print("="*65)
 print(f"  {'Metric':<22} {'Raw':>9} {'Physical':>10} {'Final':>10}  {'Δ':>10}")
 print("  " + "-"*66)
 for nm, r, p, f in zip(METRIC_NAMES, raw_nm, pc_nm, final_nm):
-    pct = (p-f)/(p+1e-10)*100
-    tag = f"↓{pct:.1f}%" if pct>=0 else f"↑{abs(pct):.1f}%"
-    flag = "✅" if f <= p+1e-5 else "⚠"
-    print(f"  {flag} {nm:<20} {r:>9.5f} {p:>10.5f} {f:>10.5f}  {tag:>10}")
+    if p < NEAR_ZERO_TOL and f < NEAR_ZERO_TOL:
+        pct_str = "Preserved"
+        pct_val = 0.0
+    else:
+        pct = (p-f)/(p+1e-10)*100
+        pct_val = pct
+        pct_str = f"↓{pct:.1f}%" if pct>=0 else f"↑{abs(pct):.1f}%"
+    
+    flag = "✅" if (f <= p + 1e-5 or f < NEAR_ZERO_TOL) else "⚠"
+    print(f"  {flag} {nm:<20} {r:>9.5f} {p:>10.5f} {f:>10.5f}  {pct_str:>10}")
 print(f"\n  SNR: raw={snr_raw:.2f}  physical={snr_pc:.2f}  final={snr_final:.2f} dB")
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -655,9 +660,12 @@ with open(f"{OUT}/Advanced_Denoising_Report.md", "w") as f:
     f.write("\n### 6-Category Noise Metrics\n")
     f.write("| Metric | Raw | Physical | Final | Δ(Phys→Final) | Status |\n|---|---|---|---|---|---|\n")
     for nm_, r, p, fi in zip(METRIC_NAMES, raw_nm, pc_nm, final_nm):
-        pct = (p-fi)/(p+1e-10)*100
-        tag = f"↓{pct:.1f}%" if pct>=0 else f"↑{abs(pct):.1f}%"
-        ok  = "✅" if fi <= p+1e-5 else "⚠"
+        if p < NEAR_ZERO_TOL and fi < NEAR_ZERO_TOL:
+            tag = "Preserved"
+        else:
+            pct = (p-fi)/(p+1e-10)*100
+            tag = f"↓{pct:.1f}%" if pct>=0 else f"↑{abs(pct):.1f}%"
+        ok  = "✅" if (fi <= p+1e-5 or fi < NEAR_ZERO_TOL) else "⚠"
         f.write(f"| {nm_} | {r:.5f} | {p:.5f} | {fi:.5f} | {tag} | {ok} |\n")
     f.write("\n## 5  Output Files\n\n")
     f.write("| File | Description |\n|---|---|\n")
